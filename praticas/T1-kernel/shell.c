@@ -6,7 +6,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-#include "shell.h"
+#include "include/shell.h"
 
 #define MAX_COMMAND_LENGTH 100  // Define o tamanho máximo do comando
 #define MAX_ARGS 10  // Define o número máximo de argumentos

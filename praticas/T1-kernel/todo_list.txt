@@ -1,0 +1,12 @@
+## Task List
+resolucao de problemas / features que devem ser inseridas neste exercicio
+
+Correção
+[] corrigir "exit": builtin function ou simplesmente quebra o loop ?
+[] encapsular as instruções iniciais de buffer -> checagem de lixo na entrada
+
+
+Melhoria
+[] alterar executeCommand de void para int, de modo que retorne o status da execução. Facilitando o tipo de ação que o shell deve tomar
+[] alojar um array de pid's `pid_array[]`, tendo um controle do total de processos no shell
+    [] fazer a checagem no array `pid_array[]` se existe algum processo finalizado. se houver, KILL
