@@ -6,31 +6,52 @@
 #include <sys/wait.h>
 #include <signal.h>
 
+#include "shell.h"
+
 #define MAX_COMMAND_LENGTH 100  // Define o tamanho máximo do comando
 #define MAX_ARGS 10  // Define o número máximo de argumentos
 
 void executeCommand(char *command, char **args, int background) {
-    pid_t pid = fork();  // Cria um novo processo filho
+    pid_t pid; 
+    int num_f;
+    int status;
+    
+    //Inclui mais um para lista de filhos do pai
 
+    pid = fork();  // Cria um novo processo filho
     if (pid < 0) {  // Se ocorrer um erro ao criar o processo filho
         perror("Erro ao criar um novo processo");
         exit(EXIT_FAILURE);
-    } else if (pid == 0) {
-        // Processo filho
-
-        // Executa o comando fornecido
-        execvp(command, args);
-
-        // Se o execvp retornar, ocorreu um erro na execução do comando
-        perror("Erro ao executar o comando");
-        exit(EXIT_FAILURE);
-    } else {
-        // Processo pai
-
-        // Se o comando não for executado em segundo plano, espera pelo filho
-        if (!background)
-            waitpid(pid, NULL, 0);
     }
+
+    if (pid == 0) {// Processo filho
+        
+        if(builtin_execute(args) == 0){ //Verifica se eh um comando builtin antes
+            if(execvp(command, args) == -1){ //verifica se há commando linux
+                perror("Erro ao executar o comando");
+            } 
+            //else .. 
+            printf("Comando nao reconhecido\n");
+            exit(EXIT_FAILURE);
+        }
+
+
+    } else {// Processo pai
+            
+        //Em primeiro plano, espera pelo filho
+        if(!background){
+            do{
+                //WUNTRACED -> retorno caso haja deadlock
+                waitpid(pid, &status, WUNTRACED);
+            }while(!WIFEXITED(status) && !WIFSIGNALED(status));
+        }// else{
+        //Em segundo plano, checa conclusao de filhos
+        //#TODO: finalizar processos em background com  NOHANG ou UNTRACED?
+        //result = waitpid(pidarray[j], &status2, WNOHANG);
+        
+        //} 
+    }
+
 }
 
 int main() {
@@ -72,3 +93,5 @@ int main() {
 
     return 0;
 }
+
+
