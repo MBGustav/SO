@@ -6,13 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/types.h>
 #include <signal.h>
 
+
 //Builtin - Library Declarations
-#include "builtin_cmd.h"
 // #include "shell_functions.h"
+#include "builtin_cmd.h"
 
 
 //DEFINES
@@ -21,12 +22,21 @@
 #define MAX_ARGS 10  // Define o número máximo de argumentos
 
 
-
 //struct pid_manager
 typedef struct pidManager{
     int *array;
     int counter;
 }pidManager;
 
+
+int novo_processo(char **args, int bg, pidManager *pidM);
+
+pidManager* new_pidM();
+
+// void kill_pidM(pidManager *p);
+
+void check_dead_process(pidManager *pidM);
+
+void sig_term(int signo);
 
 #endif // _SHELL_H_

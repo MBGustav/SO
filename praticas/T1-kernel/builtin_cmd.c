@@ -11,6 +11,7 @@ char *builtin_list[] =
 
 
 int builtin_execute(char **args){
+
 /*Funcao seletora de funcao de comandos internos 
     In: comando de entrada
     out:
@@ -46,7 +47,7 @@ int builtin_execute(char **args){
 int cmd_cd(char **args){
     if(args[1] == NULL){
         fprintf(stderr, "Argumento faltante em \"cd\"..\n");
-        return -1;
+        return 0;
     }
     
     if(chdir(args[1]) !=0){
@@ -71,3 +72,6 @@ int cmd_help(char **args){
     return 1;
 }
 
+int cmd_jobs(char **args){
+    return -1;
+}

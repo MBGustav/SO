@@ -10,7 +10,7 @@ LDFLAGS =
 # Makefile settings - Can be customized.
 APPNAME = shell
 EXT = .c
-LIBDIR = src
+LIBDIR = include
 
 
 ################### Cleaning rules for Unix-based OS ###################

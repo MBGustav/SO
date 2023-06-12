@@ -2,7 +2,7 @@
 resolucao de problemas / features que devem ser inseridas neste exercicio
 
 Correção
-[] corrigir "exit": builtin function ou simplesmente quebra o loop ?
+[x] corrigir "exit": builtin function ou simplesmente quebra o loop ?
 [] encapsular as instruções iniciais de buffer -> checagem de lixo na entrada
 
 

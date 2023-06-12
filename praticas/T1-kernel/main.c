@@ -7,13 +7,12 @@
 #include <signal.h>
 
 #include "include/shell.h"
-
+// #include "include/shell_functions.h"
 #define MAX_COMMAND_LENGTH 100  // Define o tamanho máximo do comando
 #define MAX_ARGS 10  // Define o número máximo de argumentos
 
 void executeCommand(char *command, char **args, int background) {
     pid_t pid; 
-    int num_f;
     int status;
     
     //Inclui mais um para lista de filhos do pai
@@ -43,6 +42,10 @@ void executeCommand(char *command, char **args, int background) {
             do{
                 //WUNTRACED -> retorno caso haja deadlock
                 waitpid(pid, &status, WUNTRACED);
+                
+                //Caso tenhamos interrupcao por ctrl+c:
+                // kill(pid, SIGHUP);
+
             }while(!WIFEXITED(status) && !WIFSIGNALED(status));
         }// else{
         //Em segundo plano, checa conclusao de filhos
@@ -54,13 +57,36 @@ void executeCommand(char *command, char **args, int background) {
 
 }
 
+int exec_command(char argc, char **argv, int bg, pidManager *pidM){
+
+    //Checagem de execucao de funcao interna
+    int status_command = builtin_execute(argv);
+    // printf("res: %d\n", status_command);
+    
+    //Saida do terminal //Saida de sinal diferente
+    if(status_command == -1 || status_command != 0){
+        //qualquer sinal != 0 eh uma finalizacao de sistema
+        // kill_pidM(pidM);
+        return status_command;
+    }
+
+    return novo_processo(argv, bg, pidM);
+}
+
+
+
+
 int main() {
     char command[MAX_COMMAND_LENGTH];  // Variável para armazenar o comando digitado pelo usuário
     char *args[MAX_ARGS];  // Array de ponteiros para armazenar os argumentos
     char *token;  // Variável para armazenar cada token do comando
     int background = 0;  // Variável que indica se o comando deve ser executado em segundo plano
+    int status_loop = 0;
 
-    while (1) {
+    pidManager *pidM = new_pidM();//Cria Gerenciador de PID
+    while (status_loop == 0) {
+        signal(SIGINT,sig_term);
+        
         printf("$ ");  // Exibe o prompt do shell
         fgets(command, MAX_COMMAND_LENGTH, stdin);  // Lê o comando digitado pelo usuário
         command[strcspn(command, "\n")] = '\0';  // Remove a quebra de linha do final
@@ -84,11 +110,12 @@ int main() {
         args[i] = NULL;  // O último elemento do array de argumentos deve ser NULL
 
         // Verifica se o comando é "exit" para encerrar o shell
-        if (strcmp(args[0], "exit") == 0)
-            break;
+        // if (strcmp(args[0], "exit") == 0)
+        //     break;
 
         // Executa o comando
-        executeCommand(args[0], args, background);
+        // executeCommand(args[0], args, background);
+        status_loop = exec_command(i, args, background, pidM);
     }
 
     return 0;
