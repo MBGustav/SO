@@ -17,7 +17,16 @@
 
 //DEFINES
 #define NUM_PID 10
+#define MAX_COMMAND_LENGTH 100  // Define o tamanho máximo do comando
+#define MAX_ARGS 10  // Define o número máximo de argumentos
 
+
+
+//struct pid_manager
+typedef struct pidManager{
+    int *array;
+    int counter;
+}pidManager;
 
 
 #endif // _SHELL_H_
